@@ -3,6 +3,7 @@ public class Homework2 {
 
 	public static void main(String[] args) {
 		int n = 3;
+		double epsilon = 0.000001d;
 		double[] d = new double[n];
 		double[][] A = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
 		// { 1, -1, 2 }
@@ -18,13 +19,41 @@ public class Homework2 {
 			for (int i = 0; i < n; ++i) {
 				d[i] = A[i][i];
 				for (int j = 0; j <= i - 1; ++j)
-					d[i] -= (A[i][i]/A[i][i])*d[j];
-				
+					d[i] -= (A[i][i] / A[i][i]) * d[j];
 			}
 			System.out.print("D = ");
 			for (double it : d)
 				System.out.print(it + " ");
 			System.out.println();
+
+			double[][] L = new double[n][n];
+
+			for (int i = 1; i < n; ++i)
+				L[i][i] = 1;
+			// L
+			for (int i = 0; i < n; ++i) {
+				for (int j = i + 1; j < n; ++j) {
+					double aux = 0d;
+					for (int k = 0; k < i - 1; ++k) {
+//						if (i == k && j == k)
+//							aux += d[k];
+//						else if (i == k)
+//							aux += L[j][k] * d[k];
+//						else if (j == k)
+							aux += L[i][k] * L[j][k] * d[k];
+					}
+					L[j][i] = (A[j][i] - aux) / d[i];
+				}
+			}
+			System.out.println("L = ");
+			for (double it : L[0])
+				System.out.print(it + " ");
+			System.out.println();
+			for (int i = 1; i < n; ++i) {
+				for (double it : L[i])
+					System.out.print(it + " ");
+				System.out.println();
+			}
 		}
 	}
 
@@ -52,22 +81,21 @@ public class Homework2 {
 		return true;
 	}
 
-	// public static double[][] getSubMatrix(double[][] a, int n, int posI, int
-	// posJ) {
-	// double[][] r = new double[n][n];
-	//
-	// for (int i = 0; i < n; ++i) {
-	// for (int j = 0; j < n; ++j) {
-	// r[i][j] = a[i + posI][j + posJ];
-	// // System.out.print(r[i][j] + " ");
-	// }
-	// // System.out.println();
-	// // if (i == n - 1)
-	// // System.out.println();
-	// }
-	//
-	// return r;
-	// }
+	public static double[][] getSubMatrix(double[][] a, int n, int posI, int posJ) {
+		double[][] r = new double[n][n];
+
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				r[i][j] = a[i + posI][j + posJ];
+				// System.out.print(r[i][j] + " ");
+			}
+			// System.out.println();
+			// if (i == n - 1)
+			// System.out.println();
+		}
+
+		return r;
+	}
 
 	public static double calcDeterminant(double[][] a, int n) {
 		double r = 0;
