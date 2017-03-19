@@ -35,12 +35,12 @@ public class Homework2 {
 				for (int j = i + 1; j < n; ++j) {
 					double aux = 0d;
 					for (int k = 0; k < i - 1; ++k) {
-//						if (i == k && j == k)
-//							aux += d[k];
-//						else if (i == k)
-//							aux += L[j][k] * d[k];
-//						else if (j == k)
-							aux += L[i][k] * L[j][k] * d[k];
+						// if (i == k && j == k)
+						// aux += d[k];
+						// else if (i == k)
+						// aux += L[j][k] * d[k];
+						// else if (j == k)
+						aux += L[i][k] * L[j][k] * d[k];
 					}
 					L[j][i] = (A[j][i] - aux) / d[i];
 				}
@@ -54,6 +54,21 @@ public class Homework2 {
 					System.out.print(it + " ");
 				System.out.println();
 			}
+			
+//			L[2][1] = L[1][2] = -0.5d;
+//			double[][] rez;
+//			double[][] D = { { 1, 0, 0 }, { 0, 4, 0 }, { 0, 0, 1 } };
+//			rez = multiplyMatrix(L, D);
+//			rez = multiplyMatrix(rez, transposeMatrix(L));
+//			System.out.println("rez = ");
+//			for (double it : rez[0])
+//				System.out.print(it + " ");
+//			System.out.println();
+//			for (int i = 1; i < n; ++i) {
+//				for (double it : rez[i])
+//					System.out.print(it + " ");
+//				System.out.println();
+//			}
 		}
 	}
 
@@ -126,7 +141,7 @@ public class Homework2 {
 		return r;
 	}
 
-	public double[][] transposeMatrix(double[][] a) {
+	public static double[][] transposeMatrix(double[][] a) {
 		double[][] r = new double[a.length][a.length];
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a.length; j++) {
