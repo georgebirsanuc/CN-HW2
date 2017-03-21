@@ -16,10 +16,13 @@ public class Homework2 {
 
 		if (matrixIsValid) {
 			// D
-			for (int i = 0; i < n; ++i) {
-				d[i] = A[i][i];
-				for (int j = 0; j <= i - 1; ++j)
-					d[i] -= (A[i][i] / A[i][i]) * d[j];
+			for (int p = 0; p < n; ++p) {
+				d[p] = A[p][p];
+				for (int k = 0; k <= p - 1; ++k)
+					d[p] -= (A[p][p] / A[p][p]) * d[k];
+				// d[p] -= d[k] * Math.pow(A[p][k], 2);
+				if (d[p] == 0)
+					System.exit('d');
 			}
 			System.out.print("D = ");
 			for (double it : d)
@@ -28,47 +31,57 @@ public class Homework2 {
 
 			double[][] L = new double[n][n];
 
-			for (int i = 1; i < n; ++i)
-				L[i][i] = 1;
 			// L
-			for (int i = 0; i < n; ++i) {
-				for (int j = i + 1; j < n; ++j) {
-					double aux = 0d;
-					for (int k = 0; k < i - 1; ++k) {
-						// if (i == k && j == k)
-						// aux += d[k];
-						// else if (i == k)
-						// aux += L[j][k] * d[k];
-						// else if (j == k)
-						aux += L[i][k] * L[j][k] * d[k];
+			// for (int i = 0; i < n; ++i)
+			// L[i][i] = 1;
+			// for (int i = 0; i < n; ++i) {
+			// for (int j = i + 1; j < n; ++j) {
+			// double aux = 0d;
+			// for (int k = 0; k < j - 1; ++k) {
+			// // if (i == k && j == k)
+			// // aux += d[k];
+			// // else if (i == k)
+			// // aux += L[j][k] * d[k];
+			// // else if (j == k)
+			// aux += L[i][k] * L[j][k] * d[k];
+			// }
+			// A[i][j] = A[j][i] = (A[j][i] - aux) / d[i];
+			// }
+			// }
+
+			for (int p = 0; p < n; ++p) {
+				for (int i = p + 1; i < n; ++i) {
+					for (int k = 0; k <= p - 1; ++k) {
+						A[i][p] -= d[k] * A[i][k] * A[p][k];
 					}
-					L[j][i] = (A[j][i] - aux) / d[i];
+					A[i][p] /= d[p];
+					A[p][i] = A[i][p];
 				}
 			}
 			System.out.println("L = ");
-			for (double it : L[0])
+			for (double it : A[0])
 				System.out.print(it + " ");
 			System.out.println();
 			for (int i = 1; i < n; ++i) {
-				for (double it : L[i])
+				for (double it : A[i])
 					System.out.print(it + " ");
 				System.out.println();
 			}
-			
-//			L[2][1] = L[1][2] = -0.5d;
-//			double[][] rez;
-//			double[][] D = { { 1, 0, 0 }, { 0, 4, 0 }, { 0, 0, 1 } };
-//			rez = multiplyMatrix(L, D);
-//			rez = multiplyMatrix(rez, transposeMatrix(L));
-//			System.out.println("rez = ");
-//			for (double it : rez[0])
-//				System.out.print(it + " ");
-//			System.out.println();
-//			for (int i = 1; i < n; ++i) {
-//				for (double it : rez[i])
-//					System.out.print(it + " ");
-//				System.out.println();
-//			}
+
+			// L[2][1] = L[1][2] = -0.5d;
+			// double[][] rez;
+			// double[][] D = { { 1, 0, 0 }, { 0, 4, 0 }, { 0, 0, 1 } };
+			// rez = multiplyMatrix(L, D);
+			// rez = multiplyMatrix(rez, transposeMatrix(L));
+			// System.out.println("rez = ");
+			// for (double it : rez[0])
+			// System.out.print(it + " ");
+			// System.out.println();
+			// for (int i = 1; i < n; ++i) {
+			// for (double it : rez[i])
+			// System.out.print(it + " ");
+			// System.out.println();
+			// }
 		}
 	}
 
