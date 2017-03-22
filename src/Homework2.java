@@ -1,11 +1,15 @@
-
 public class Homework2 {
 
 	public static void main(String[] args) {
 		int n = 3;
 		double epsilon = 0.000001d;
 		double[] d = new double[n];
-		double[][] A = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
+		double[] z = new double[n];
+		double[] y = new double[n];
+		double[] x = new double[n];
+		double[] b = { 1, 2, 3 };
+		 double[][] A = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
+//		double[][] A = { { 1, 2.5, 3 }, { 2.5, 8.25, 15.5 }, { 3, 15.5, 43 } };
 		// { 1, -1, 2 }
 		// { -1, 5, -4 }
 		// { 2, -4, 6 }
@@ -19,7 +23,7 @@ public class Homework2 {
 			for (int p = 0; p < n; ++p) {
 				d[p] = A[p][p];
 				for (int k = 0; k <= p - 1; ++k)
-					d[p] -= (A[p][p] / A[p][p]) * d[k];
+					d[p] -= A[p][k] / A[p][k] * d[k];
 				// d[p] -= d[k] * Math.pow(A[p][k], 2);
 				if (d[p] == 0)
 					System.exit('d');
@@ -28,26 +32,6 @@ public class Homework2 {
 			for (double it : d)
 				System.out.print(it + " ");
 			System.out.println();
-
-			double[][] L = new double[n][n];
-
-			// L
-			// for (int i = 0; i < n; ++i)
-			// L[i][i] = 1;
-			// for (int i = 0; i < n; ++i) {
-			// for (int j = i + 1; j < n; ++j) {
-			// double aux = 0d;
-			// for (int k = 0; k < j - 1; ++k) {
-			// // if (i == k && j == k)
-			// // aux += d[k];
-			// // else if (i == k)
-			// // aux += L[j][k] * d[k];
-			// // else if (j == k)
-			// aux += L[i][k] * L[j][k] * d[k];
-			// }
-			// A[i][j] = A[j][i] = (A[j][i] - aux) / d[i];
-			// }
-			// }
 
 			for (int p = 0; p < n; ++p) {
 				for (int i = p + 1; i < n; ++i) {
@@ -68,20 +52,56 @@ public class Homework2 {
 				System.out.println();
 			}
 
-			// L[2][1] = L[1][2] = -0.5d;
-			// double[][] rez;
-			// double[][] D = { { 1, 0, 0 }, { 0, 4, 0 }, { 0, 0, 1 } };
-			// rez = multiplyMatrix(L, D);
-			// rez = multiplyMatrix(rez, transposeMatrix(L));
-			// System.out.println("rez = ");
-			// for (double it : rez[0])
-			// System.out.print(it + " ");
-			// System.out.println();
-			// for (int i = 1; i < n; ++i) {
-			// for (double it : rez[i])
-			// System.out.print(it + " ");
-			// System.out.println();
-			// }
+			// det(A) = det(L)*det(D)*det(L^T)
+			double detA = 1;
+			for (int i = 0; i < n; ++i)
+				detA *= d[i];
+			System.out.println("Det (A) = " + detA);
+
+			// Ax = b
+			for (int i = 0; i < n; ++i) {
+				y[i] = b[i];
+				for (int j = 0; j < i; ++j) {
+					if (i == j)
+						y[i] -= 1 * y[j];
+					else
+						y[i] -= A[i][j] * y[j];
+				}
+			}
+			System.out.print("y = ");
+			printArray(y);
+
+			for (int i = 0; i < n; ++i) {
+				z[i] = y[i] / d[i];
+			}
+			System.out.print("z = ");
+			printArray(z);
+
+			for (int i = n - 1; i >= 0; --i) {
+				x[i] = z[i];
+				for (int j = i + 1; j < n; ++j) {
+					if (i == j)
+						x[i] -= 1 * x[j];
+					else
+						x[i] -= A[j][i] * x[j];
+				}
+			}
+			System.out.print("x = ");
+			printArray(x);
+		}
+	}
+
+	public static void printArray(double[] a) {
+		for (double it : a)
+			System.out.print(it + " ");
+		System.out.println();
+	}
+
+	public static void printArray(double[][] a) {
+		for (int i = 0; i < a.length; ++i) {
+			for (double it : a[i])
+				System.out.print(it + " ");
+			System.out.println();
 		}
 	}
 
