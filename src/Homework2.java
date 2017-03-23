@@ -1,18 +1,25 @@
-public class Homework2 {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;;
 
-	public static void main(String[] args) {
-		int n = 3;
-		double epsilon = 0.000001d;
-		double[] d = new double[n];
-		double[] z = new double[n];
-		double[] y = new double[n];
-		double[] x = new double[n];
-		double[] b = { 1, 2, 3 };
-		 double[][] A = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
-//		double[][] A = { { 1, 2.5, 3 }, { 2.5, 8.25, 15.5 }, { 3, 15.5, 43 } };
-		// { 1, -1, 2 }
-		// { -1, 5, -4 }
-		// { 2, -4, 6 }
+public class Homework2 {
+	static int n = 3;
+	static double epsilon = 0.000001d;
+	static double[] d = new double[n];
+	static double[] z = new double[n];
+	static double[] y = new double[n];
+	static double[] x = new double[n];
+	static double[] b;// = { 1, 2, 3 };
+	static double[][] A;//= { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
+	static double[][] Ainit;// = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
+	// double[][] A = { { 1, 2.5, 3 }, { 2.5, 8.25, 15.5 }, { 3, 15.5, 43 }
+	// };
+	// { 1, -1, 2 }
+	// { -1, 5, -4 }
+	// { 2, -4, 6 }
+
+	public static void main(String[] args) throws FileNotFoundException {
+		getInput();
 		boolean matrixIsValid = isMatrixValid(A, n);
 
 		System.out.println("Det(A) = " + calcDeterminant(A, 3));
@@ -88,7 +95,33 @@ public class Homework2 {
 			}
 			System.out.print("x = ");
 			printArray(x);
+
+			// ||Ainit * xChol - b||2
+			double norm = 0;
+			double[] X;
+			double[][] xx = new double[1][n];
+
+			for (int i = 0; i < n; ++i)
+				xx[0][i] = x[i];
+			X = multiplyMatrixWithVector(Ainit, x);
+			X = substractVectors(X, b);
+
+			for (int i = 0; i < n; ++i) {
+				norm += Math.pow(Math.abs(X[i]), 2);
+			}
+			norm = Math.sqrt(norm);
+			System.out.println("Norma = " + norm);
+			System.out.println("X = ");
+			printArray(X);
+			// for (int i = )
 		}
+	}
+
+	public static double[] substractVectors(double[] a, double[] b) {
+		double[] r = new double[a.length];
+		for (int i = 0; i < a.length; ++i)
+			r[i] = a[i] - b[i];
+		return r;
 	}
 
 	public static void printArray(double[] a) {
@@ -184,6 +217,22 @@ public class Homework2 {
 		return r;
 	}
 
+	public static double[] multiplyMatrixWithVector(double[][] matrix, double[] vector) {
+		int rows = matrix.length;
+		int columns = matrix[0].length;
+
+		double[] result = new double[rows];
+
+		for (int row = 0; row < rows; row++) {
+			double sum = 0;
+			for (int column = 0; column < columns; column++) {
+				sum += matrix[row][column] * vector[column];
+			}
+			result[row] = sum;
+		}
+		return result;
+	}
+
 	public static double[][] multiplyMatrix(double[][] a, double[][] b) {
 		double[][] r = new double[a.length][a.length];
 		for (int i = 0; i < a.length; i++) {
@@ -198,4 +247,22 @@ public class Homework2 {
 		return r;
 	}
 
+	public static void getInput() throws FileNotFoundException {
+		Scanner sc = new Scanner(new File("input.txt"));
+		epsilon = sc.nextDouble();
+		n = sc.nextInt();
+
+		A = new double[n][n];
+		Ainit = new double[n][n];
+		b = new double[n];
+		
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < n; ++j)
+				Ainit[i][j] = A[i][j] = sc.nextDouble();
+		
+		for (int i = 0 ; i<n;++i)
+			b[i] = sc.nextDouble();
+		
+		sc.close();
+	}
 }
