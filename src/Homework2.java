@@ -1,6 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;;
+import java.util.Scanner;
+
+import Jama.CholeskyDecomposition;
+import Jama.Matrix;
 
 public class Homework2 {
 	static int n = 3;
@@ -10,7 +13,8 @@ public class Homework2 {
 	static double[] y = new double[n];
 	static double[] x = new double[n];
 	static double[] b;// = { 1, 2, 3 };
-	static double[][] A;//= { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
+	public static double[][] bb = new double[n][1];
+	static double[][] A;// = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
 	static double[][] Ainit;// = { { 1, -1, 2 }, { -1, 5, -4 }, { 2, -4, 6 } };
 	// double[][] A = { { 1, 2.5, 3 }, { 2.5, 8.25, 15.5 }, { 3, 15.5, 43 }
 	// };
@@ -29,9 +33,11 @@ public class Homework2 {
 			// D
 			for (int p = 0; p < n; ++p) {
 				d[p] = A[p][p];
-				for (int k = 0; k <= p - 1; ++k)
-					d[p] -= A[p][k] / A[p][k] * d[k];
-				// d[p] -= d[k] * Math.pow(A[p][k], 2);
+				for (int k = 0; k <= p - 1; ++k) {
+					if (verifyDivision(d[k]))
+						d[p] -= A[p][k] / A[p][k] * d[k];
+					// d[p] -= d[k] * Math.pow(A[p][k], 2);
+				}
 				if (d[p] == 0)
 					System.exit('d');
 			}
@@ -45,7 +51,8 @@ public class Homework2 {
 					for (int k = 0; k <= p - 1; ++k) {
 						A[i][p] -= d[k] * A[i][k] * A[p][k];
 					}
-					A[i][p] /= d[p];
+					if (verifyDivision(d[p]))
+						A[i][p] /= d[p];
 					A[p][i] = A[i][p];
 				}
 			}
@@ -79,7 +86,8 @@ public class Homework2 {
 			printArray(y);
 
 			for (int i = 0; i < n; ++i) {
-				z[i] = y[i] / d[i];
+				if (verifyDivision(d[i]))
+					z[i] = y[i] / d[i];
 			}
 			System.out.print("z = ");
 			printArray(z);
@@ -99,10 +107,7 @@ public class Homework2 {
 			// ||Ainit * xChol - b||2
 			double norm = 0;
 			double[] X;
-			double[][] xx = new double[1][n];
 
-			for (int i = 0; i < n; ++i)
-				xx[0][i] = x[i];
 			X = multiplyMatrixWithVector(Ainit, x);
 			X = substractVectors(X, b);
 
@@ -113,8 +118,28 @@ public class Homework2 {
 			System.out.println("Norma = " + norm);
 			System.out.println("X = ");
 			printArray(X);
-			// for (int i = )
+			
+			
+			for (int i = 0; i < n; ++i)
+				bb[i][0] = b[i];
+			
+			jamaSol();
 		}
+	}
+
+	public static void jamaSol() {
+		Matrix ma = new Matrix(Ainit);
+		Matrix mb = new Matrix(bb);
+		Matrix mx = ma.solve(mb);
+		Matrix residual = ma.times(mx).minus(mb);
+		
+		CholeskyDecomposition mChol = ma.chol();
+		
+		Matrix mL = mChol.getL();
+
+		mL.print(3, 6);
+		
+		mx.print(3, 6);
 	}
 
 	public static double[] substractVectors(double[] a, double[] b) {
@@ -255,14 +280,21 @@ public class Homework2 {
 		A = new double[n][n];
 		Ainit = new double[n][n];
 		b = new double[n];
-		
+
 		for (int i = 0; i < n; ++i)
 			for (int j = 0; j < n; ++j)
 				Ainit[i][j] = A[i][j] = sc.nextDouble();
-		
-		for (int i = 0 ; i<n;++i)
+
+		for (int i = 0; i < n; ++i)
 			b[i] = sc.nextDouble();
-		
+
 		sc.close();
+	}
+
+	public static boolean verifyDivision(double x) {
+		if (Math.abs(x) < epsilon)
+			throw new ArithmeticException("Division by zero (custom)");
+
+		return true;
 	}
 }
