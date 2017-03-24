@@ -24,31 +24,35 @@ public class Homework2 {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		getInput();
+
+		System.out.println("A = ");
+		printArray(A);
 		boolean matrixIsValid = isMatrixValid(A, n);
 
 		System.out.println("Det(A) = " + calcDeterminant(A, 3));
 		System.out.println("Matrice valida: " + matrixIsValid);
 
 		if (matrixIsValid) {
-			// D
+			// // D
+			// for (int p = 0; p < n; ++p) {
+			// double aux = 0;
+			// for (int k = 0; k < p; ++k) {
+			//// if (verifyDivision(d[k]))
+			//// d[p] -= A[p][k] / A[p][k] * d[k];
+			// aux += d[k] * Math.pow(A[p][k], 2);
+			// }
+			// d[p] = A[p][p] - aux;
+			// if (d[p] == 0)
+			// System.exit('d');
+			// }
+
+			// L
 			for (int p = 0; p < n; ++p) {
 				d[p] = A[p][p];
-				for (int k = 0; k <= p - 1; ++k) {
-					if (verifyDivision(d[k]))
-						d[p] -= A[p][k] / A[p][k] * d[k];
-					// d[p] -= d[k] * Math.pow(A[p][k], 2);
-				}
-				if (d[p] == 0)
-					System.exit('d');
-			}
-			System.out.print("D = ");
-			for (double it : d)
-				System.out.print(it + " ");
-			System.out.println();
-
-			for (int p = 0; p < n; ++p) {
+				for (int kk = 0; kk < p; ++kk)
+					d[p] -= d[kk] * Math.pow(A[p][kk], 2);
 				for (int i = p + 1; i < n; ++i) {
-					for (int k = 0; k <= p - 1; ++k) {
+					for (int k = 0; k < p; ++k) {
 						A[i][p] -= d[k] * A[i][k] * A[p][k];
 					}
 					if (verifyDivision(d[p]))
@@ -56,6 +60,10 @@ public class Homework2 {
 					A[p][i] = A[i][p];
 				}
 			}
+			System.out.print("D = ");
+			for (double it : d)
+				System.out.print(it + " ");
+			System.out.println();
 			System.out.println("L = ");
 			for (double it : A[0])
 				System.out.print(it + " ");
@@ -106,23 +114,22 @@ public class Homework2 {
 
 			// ||Ainit * xChol - b||2
 			double norm = 0;
-			double[] X;
+			double[] xNorm;
 
-			X = multiplyMatrixWithVector(Ainit, x);
-			X = substractVectors(X, b);
+			xNorm = multiplyMatrixWithVector(Ainit, x);
+			xNorm = substractVectors(xNorm, b);
 
 			for (int i = 0; i < n; ++i) {
-				norm += Math.pow(Math.abs(X[i]), 2);
+				norm += Math.pow(Math.abs(xNorm[i]), 2);
 			}
 			norm = Math.sqrt(norm);
 			System.out.println("Norma = " + norm);
-			System.out.println("X = ");
-			printArray(X);
-			
-			
+			System.out.println("xNorm = ");
+			printArray(xNorm);
+
 			for (int i = 0; i < n; ++i)
 				bb[i][0] = b[i];
-			
+
 			jamaSol();
 		}
 	}
@@ -132,13 +139,13 @@ public class Homework2 {
 		Matrix mb = new Matrix(bb);
 		Matrix mx = ma.solve(mb);
 		Matrix residual = ma.times(mx).minus(mb);
-		
+
 		CholeskyDecomposition mChol = ma.chol();
-		
+
 		Matrix mL = mChol.getL();
 
 		mL.print(3, 6);
-		
+
 		mx.print(3, 6);
 	}
 
